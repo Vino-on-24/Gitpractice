@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<title>Git & GitHub Complete Guide</title>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+  background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+  color: #fff;
+  line-height: 1.6;
+  min-height: 100vh;
+}
+.header {
+  text-align: center;
+  padding: 50px 20px 30px;
+  background: linear-gradient(135deg, rgba(99,102,241,0.1), rgba(168,85,247,0.1));
+  border-bottom: 2px solid rgba(99,102,241,0.3);
+}
+.header h1 {
+  font-size: 3rem;
+  font-weight: 800;
+  margin-bottom: 10px;
+  background: linear-gradient(135deg, #6366f1, #a855f7, #ec4899);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.header .subtitle {
+  font-size: 1.2rem;
+  color: #c0c0d0;
+  margin-bottom: 8px;
+}
+.header .stats {
+  font-size: 0.95rem;
+  color: #8080a0;
+  margin-top: 12px;
+}
+.container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 30px 20px;
+}
+.category {
+  background: rgba(30,30,50,0.6);
+  backdrop-filter: blur(10px);
+  border-radius: 16px;
+  padding: 25px;
+  margin-bottom: 30px;
+  border: 1px solid rgba(99,102,241,0.2);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+}
+.category-title {
+  font-size: 1.6rem;
+  font-weight: 700;
+  margin-bottom: 20px;
+  padding-bottom: 12px;
+  border-bottom: 3px solid #6366f1;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.topics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 18px;
+}
+.topic-card {
+  background: rgba(40,40,70,0.8);
+  border-radius: 12px;
+  padding: 20px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border-left: 4px solid #6366f1;
+  position: relative;
+  overflow: hidden;
+}
+.topic-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, rgba(99,102,241,0.1), rgba(168,85,247,0.1));
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.topic-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 12px 40px rgba(99,102,241,0.4);
+  border-left-color: #a855f7;
+}
+.topic-card:hover::before { opacity: 1; }
+.topic-card h3 {
+  font-size: 1.2rem;
+  color: #fff;
+  margin-bottom: 6px;
+  font-weight: 600;
+  position: relative;
+  z-index: 1;
+}
+.topic-card .cat-label {
+  font-size: 0.8rem;
+  color: #a0a0c0;
+  margin-bottom: 10px;
+  position: relative;
+  z-index: 1;
+}
+.topic-card p {
+  color: #c0c0d0;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  position: relative;
+  z-index: 1;
+}
+.modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.85);
+  backdrop-filter: blur(5px);
+  z-index: 1000;
+  overflow-y: auto;
+  padding: 20px;
+}
+.modal-dialog {
+  max-width: 1100px;
+  margin: 40px auto;
+  background: #1a1a2e;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+  border: 2px solid rgba(99,102,241,0.3);
+}
+.modal-header {
+  background: linear-gradient(135deg, #6366f1, #a855f7, #ec4899);
+  padding: 25px 30px;
+  position: relative;
+}
+.modal-header h2 {
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin-bottom: 6px;
+  padding-right: 50px;
+}
+.modal-header .desc {
+  color: rgba(255,255,255,0.95);
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+.close-btn {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.2);
+  border: none;
+  color: #fff;
+  font-size: 22px;
+  cursor: pointer;
+  transition: all 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+}
+.close-btn:hover {
+  background: rgba(255,255,255,0.3);
+  transform: rotate(90deg);
+}
+.modal-body {
+  padding: 35px;
+  background: linear-gradient(135deg, #1a1a2e, #16213e);
+}
+.section {
+  margin-bottom: 30px;
+}
+.section-title {
+  font-size: 1.3rem;
+  color: #a855f7;
+  margin-bottom: 15px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 600;
+}
+.keypoint {
+  background: rgba(99,102,241,0.1);
+  border-left: 4px solid #6366f1;
+  padding: 14px 18px;
+  margin-bottom: 10px;
+  border-radius: 8px;
+  display: flex;
+  gap: 12px;
+  align-items: start;
+  transition: all 0.2s;
+}
+.keypoint:hover {
+  background: rgba(99,102,241,0.15);
+  transform: translateX(5px);
+}
+.keypoint::before {
+  content: '▸';
+  color: #a855f7;
+  font-size: 1.1rem;
+  font-weight: bold;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+.keypoint-text {
+  color: #e0e0f0;
+  line-height: 1.6;
+  font-size: 0.95rem;
+}
+.command-block {
+  background: rgba(15,23,42,0.8);
+  border: 1px solid rgba(99,102,241,0.3);
+  border-radius: 10px;
+  padding: 14px 18px;
+  margin-bottom: 10px;
+  transition: all 0.2s;
+}
+.command-block:hover {
+  border-color: #6366f1;
+  box-shadow: 0 4px 12px rgba(99,102,241,0.2);
+}
+.command-block code {
+  color: #4ade80;
+  font-family: 'Courier New', Consolas, Monaco, monospace;
+  font-size: 0.9rem;
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 500;
+}
+.command-block .desc {
+  color: #a0a0c0;
+  font-size: 0.85rem;
+  line-height: 1.5;
+}
+.example-block {
+  background: rgba(15,23,42,0.6);
+  border: 1px solid rgba(168,85,247,0.3);
+  border-radius: 12px;
+  padding: 18px;
+  margin-bottom: 15px;
+}
+.example-block h4 {
+  color: #c084fc;
+  font-size: 1.05rem;
+  margin-bottom: 10px;
+  font-weight: 600;
+}
+.example-block pre {
+  color: #e0e0f0;
+  font-family: 'Courier New', Consolas, Monaco, monospace;
+  font-size: 0.85rem;
+  line-height: 1.7;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  background: rgba(0,0,0,0.3);
+  padding: 14px;
+  border-radius: 8px;
+  overflow-x: auto;
+}
+.interview-section {
+  background: linear-gradient(135deg, rgba(234,179,8,0.1), rgba(251,191,36,0.05));
+  border-left: 4px solid #eab308;
+  padding: 22px;
+  border-radius: 12px;
+}
+.interview-section .section-title {
+  color: #fbbf24;
+}
+.interview-section p {
+  color: #f0f0f0;
+  line-height: 1.8;
+  margin-bottom: 10px;
+  font-size: 0.95rem;
+}
+.interview-section strong {
+  color: #fcd34d;
+  font-weight: 600;
+}
+.interview-section b {
+  color: #fde047;
+}
+.footer {
+  text-align: center;
+  padding: 35px 20px;
+  color: #8080a0;
+  font-size: 0.9rem;
+  border-top: 1px solid rgba(99,102,241,0.2);
+  margin-top: 30px;
+}
+@media(max-width:768px) {
+  .header h1 { font-size: 2rem; }
+  .topics-grid { grid-template-columns: 1fr; }
+  .modal-body { padding: 25px; }
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div style="font-size:3.5rem;margin-bottom:12px;">🚀</div>
+  <h1>Git & GitHub Mastery</h1>
+  <div class="subtitle">Complete Guide for DevOps Engineers & Developers</div>
+  <div class="stats">📚 18 Topics • 💻 90+ Commands • 🎯 120+ Examples • 💡 60+ Interview Q&A</div>
+</div>
+
+<div class="container" id="content"></div>
+
+<div class="footer">
+  <p style="font-size:1.1rem;font-weight:600;color:#a855f7;margin-bottom:8px;">Git & GitHub Complete Guide</p>
+  <p>Created for DevOps Engineers and Developers</p>
+  <p style="margin-top:12px;color:#6366f1;">Made with ❤️ for Rajkumar @ Finspot</p>
+</div>
+
+<div id="modal" class="modal" onclick="if(event.target===this)closeModal()">
+  <div class="modal-dialog" onclick="event.stopPropagation()">
+    <div class="modal-header">
+      <button class="close-btn" onclick="closeModal()">×</button>
+      <div id="modal-header-content"></div>
+    </div>
+    <div class="modal-body" id="modal-body-content"></div>
+  </div>
+</div>
+
+<script>
+const allTopics = [
+  {
+    category: "Git Basics",
+    icon: "🎯",
+    topics: [
+      {
+        name: "Git Introduction",
+        desc: "Git is a distributed version control system for tracking code changes. Every developer has full repository history.",
+        key: [
+          "Distributed VCS - every developer has complete repository history locally",
+          "Created by Linus Torvalds in 2005 for Linux kernel development",
+          "Tracks changes via snapshots, not file deltas - more efficient storage",
+          "Three states: Working Directory, Staging Area (Index), Repository (.git)",
+          "Works completely offline - commit, branch, merge without internet connection"
+        ],
+        cmd: [
+          ["git --version", "Check installed Git version"],
+          ["git config --global user.name 'Your Name'", "Set your username globally"],
+          ["git config --global user.email 'your@email.com'", "Set your email globally"],
+          ["git config --list", "View all Git configurations"],
+          ["git help <command>", "Get help for any Git command"]
+        ],
+        ex: [
+          { title: "Initial Git Setup", code: "# Configure Git for first time\ngit config --global user.name \"Rajkumar\"\ngit config --global user.email \"raj@finspot.com\"\ngit config --global core.editor \"vim\"\ngit config --global init.defaultBranch main\n\n# Verify configuration\ngit config --list" },
+          { title: "Understanding Git States", code: "# Three main areas:\n# 1. Working Directory - where you edit files\n# 2. Staging Area (Index) - prepared for commit\n# 3. Repository (.git) - permanent storage\n\n# File lifecycle:\n# Untracked → Staged → Committed → Modified" }
+        ],
+        int: "<p><b>Q: What is Git and how does it differ from GitHub?</b><br><strong>A:</strong> Git is a distributed version control system that runs locally to track code changes. GitHub is a cloud-based hosting service for Git repositories with collaboration features like pull requests, issues, and CI/CD.</p><p><b>Q: Explain the three states in Git</b><br><strong>A:</strong> 1) <strong>Working Directory:</strong> Where you modify files<br>2) <strong>Staging Area:</strong> Where you prepare commits with 'git add'<br>3) <strong>Repository:</strong> Where Git permanently stores snapshots</p>"
+      },
+      {
+        name: "Repository Init & Clone",
+        desc: "Initialize new Git repositories or clone existing ones. Creates .git directory containing all version control data.",
+        key: [
+          "git init creates a new repository in the current directory",
+          "git clone copies an existing repository with complete history",
+          "Can clone via HTTPS (requires credentials) or SSH (key-based)",
+          "Shallow clones (--depth) save bandwidth by limiting history depth",
+          ".git directory contains all version control data - never delete it"
+        ],
+        cmd: [
+          ["git init", "Initialize new Git repository"],
+          ["git clone <url>", "Clone remote repository"],
+          ["git clone --depth 1 <url>", "Shallow clone (latest commit only)"],
+          ["gh repo create", "Create GitHub repo (CLI)"]
+        ],
+        ex: [
+          { title: "Initialize New Project", code: "mkdir devops-project\ncd devops-project\ngit init\necho \"# DevOps Project\" > README.md\ngit add .\ngit commit -m \"Initial commit\"" },
+          { title: "Clone Repository", code: "# Clone via SSH (recommended)\ngit clone git@github.com:user/repo.git\n\n# Clone via HTTPS\ngit clone https://github.com/user/repo.git\n\n# Shallow clone for CI/CD\ngit clone --depth 1 https://github.com/kubernetes/kubernetes.git" }
+        ],
+        int: "<p><b>Q: What happens when you run 'git init'?</b><br><strong>A:</strong> Git creates a .git directory containing: objects/ (commits, files), refs/ (branches, tags), HEAD (current branch pointer), config (settings), hooks/ (automation scripts).</p><p><b>Q: When use shallow clone?</b><br><strong>A:</strong> In CI/CD pipelines where you only need latest code to build/test, not full history. Saves time and disk space. Example: Docker builds in Jenkins.</p>"
+      },
+      {
+        name: "Status & Diffs",
+        desc: "Monitor working directory state and view changes. Essential for understanding current state before commits.",
+        key: [
+          "git status shows current branch, modified files, and staging state",
+          "git diff shows line-by-line changes in working directory",
+          "git log displays commit history with author, date, and message",
+          "Red files in status = modified, Green = staged and ready to commit",
+          "Always check status and diff before committing to verify changes"
+        ],
+        cmd: [
+          ["git status", "Show working directory status"],
+          ["git diff", "Show unstaged changes"],
+          ["git diff --staged", "Show staged changes"],
+          ["git log --oneline", "Compact commit history"],
+          ["git log --graph --all", "Visual branch graph"]
+        ],
+        ex: [
+          { title: "Check Status", code: "git status\n# Red files: Modified but not staged\n# Green files: Staged and ready\n# Untracked: New files\n\ngit diff app.js  # See exact changes\ngit diff --staged  # See what will be committed" },
+          { title: "View History", code: "# Compact log\ngit log --oneline -10\n\n# Beautiful graph\ngit log --graph --oneline --all\n\n# Search commits\ngit log --grep=\"fix\" --author=\"Rajkumar\"" }
+        ],
+        int: "<p><b>Q: 'git diff' vs 'git diff --staged'?</b><br><strong>A:</strong> 'git diff' shows unstaged changes (working dir vs staging). 'git diff --staged' shows staged changes (staging vs last commit). Helps review before committing.</p>"
+      }
+    ]
+  },
+  {
+    category: "Working with Changes",
+    icon: "✏️",
+    topics: [
+      {
+        name: "Add & Commit",
+        desc: "Stage files and create commits - permanent snapshots with descriptive messages describing what changed and why.",
+        key: [
+          "git add moves files from working directory to staging area",
+          "Staging area lets you craft precise, atomic commits",
+          "git commit creates permanent snapshot with unique SHA-1 hash",
+          "Commit messages should be clear: what changed and why",
+          "Atomic commits: each commit represents one logical change"
+        ],
+        cmd: [
+          ["git add <file>", "Stage specific file"],
+          ["git add .", "Stage all changes in current directory"],
+          ["git add -p", "Interactive staging (choose hunks)"],
+          ["git commit -m 'message'", "Commit with inline message"],
+          ["git commit --amend", "Modify last commit"]
+        ],
+        ex: [
+          { title: "Basic Workflow", code: "# Stage files\ngit add src/app.js config/db.yml\n\n# Commit\ngit commit -m \"feat: Add user authentication\"\n\n# Stage all and commit\ngit commit -am \"fix: Database timeout\"" },
+          { title: "Good Commit Messages", code: "# Conventional commits format:\nfeat(api): Add user authentication endpoint\nfix(k8s): Increase deployment timeout\ndocs(readme): Update installation steps" }
+        ],
+        int: "<p><b>Q: Why have staging area?</b><br><strong>A:</strong> Allows crafting precise commits. You might have bug fix + new feature mixed. Stage bug fix first (commit), then stage feature (commit). Makes history clearer and reverting easier.</p><p><b>Q: When use 'git commit --amend'?</b><br><strong>A:</strong> Only for unpushed commits! Use to add forgotten files or fix message typos. Never amend public commits - rewrites history.</p>"
+      },
+      {
+        name: "Ignoring Files",
+        desc: "Specify files and patterns for Git to ignore. Essential for excluding secrets, build artifacts, dependencies.",
+        key: [
+          ".gitignore file specifies patterns for files Git should ignore",
+          "Prevents accidentally committing sensitive data or temporary files",
+          "Patterns apply to all subdirectories unless path is specified",
+          "Can have multiple .gitignore files at different directory levels",
+          "Global .gitignore for personal preferences (IDE settings, OS files)"
+        ],
+        cmd: [
+          ["touch .gitignore", "Create .gitignore file"],
+          ["git rm --cached <file>", "Remove file from Git but keep locally"],
+          ["git clean -fd", "Remove untracked files"],
+          ["git check-ignore -v <file>", "Debug why file is ignored"]
+        ],
+        ex: [
+          { title: "DevOps .gitignore", code: "# Secrets\n.env\n*.pem\n*.key\nsecrets.yaml\n\n# Dependencies\nnode_modules/\nvenv/\n\n# Build\ndist/\n*.log\n.terraform/\n\n# IDE\n.vscode/\n.idea/" },
+          { title: "Remove Already Committed", code: "# Accidentally committed node_modules\necho \"node_modules/\" >> .gitignore\ngit rm -r --cached node_modules/\ngit commit -m \"chore: Remove node_modules\"\n\n# CRITICAL: Rotate secrets if committed!" }
+        ],
+        int: "<p><b>Q: Accidentally committed secrets?</b><br><strong>A:</strong> 1) Add to .gitignore, 2) git rm --cached secrets.env, 3) Commit removal, 4) ROTATE THE SECRETS! (they're in history), 5) Use BFG Repo-Cleaner to purge history, 6) Force push (dangerous). Prevention: Use pre-commit hooks.</p>"
+      }
+    ]
+  },
+  {
+    category: "Branching & Merging",
+    icon: "🌿",
+    topics: [
+      {
+        name: "Branches",
+        desc: "Branches are lightweight pointers to commits enabling parallel development without affecting main code.",
+        key: [
+          "Branches allow parallel development without affecting main code",
+          "Branch is just a movable pointer to a commit - very lightweight (40 bytes)",
+          "HEAD points to current branch; detached HEAD points to specific commit",
+          "Creating branch doesn't copy files - just creates new pointer",
+          "Common branches: main/master, develop, feature/*, bugfix/*, hotfix/*"
+        ],
+        cmd: [
+          ["git branch", "List all local branches"],
+          ["git checkout -b <name>", "Create and switch to new branch"],
+          ["git branch -d <name>", "Delete branch (safe)"],
+          ["git switch <branch>", "Switch branch (newer syntax)"]
+        ],
+        ex: [
+          { title: "Basic Operations", code: "# Create and switch\ngit checkout -b feature/auth\n\n# Work and commit\ngit commit -am \"Add authentication\"\n\n# Switch back\ngit checkout main\ngit merge feature/auth\ngit branch -d feature/auth" },
+          { title: "Branch Naming", code: "# Features\nfeature/add-redis-cache\n\n# Bug fixes\nbugfix/memory-leak\n\n# Hotfixes\nhotfix/security-patch\n\n# With tickets\nJIRA-123-implement-auth" }
+        ],
+        int: "<p><b>Q: What is HEAD?</b><br><strong>A:</strong> HEAD is pointer to current branch, which points to last commit. When you commit, branch moves forward. Detached HEAD = HEAD points directly to commit, not branch.</p><p><b>Q: Branch strategies?</b><br><strong>A:</strong> Git Flow: main, develop, feature/*, hotfix/* - for scheduled releases. GitHub Flow: main + features - simpler, continuous deployment. Trunk-Based: main + short features - best for CI/CD.</p>"
+      },
+      {
+        name: "Merging",
+        desc: "Combine changes from branches. Fast-forward moves pointer, three-way creates merge commit.",
+        key: [
+          "git merge combines changes from one branch into current branch",
+          "Fast-forward merge: linear history, just moves pointer forward",
+          "Three-way merge: creates new merge commit with two parents",
+          "Conflicts happen when same lines modified in both branches",
+          "Always checkout target branch first, then merge source branch"
+        ],
+        cmd: [
+          ["git merge <branch>", "Merge branch into current"],
+          ["git merge --no-ff <branch>", "Force merge commit"],
+          ["git merge --abort", "Abort merge"],
+          ["git diff --name-only --diff-filter=U", "List conflicts"]
+        ],
+        ex: [
+          { title: "Basic Merge", code: "# Merge feature into develop\ngit checkout develop\ngit pull origin develop\ngit merge feature/new-api\ngit push origin develop\n\n# Delete feature branch\ngit branch -d feature/new-api" },
+          { title: "Resolve Conflicts", code: "git merge feature/update\n# CONFLICT in config.yml\n\n# Open file, see markers:\n# <<<<<<< HEAD\n# database: postgresql\n# =======\n# database: mysql\n# >>>>>>> feature\n\n# Fix, remove markers\ngit add config.yml\ngit commit" }
+        ],
+        int: "<p><b>Q: Fast-forward vs three-way?</b><br><strong>A:</strong> Fast-forward: Target unchanged since branch, just move pointer. Linear history, no merge commit. Three-way: Both have new commits, creates merge commit with two parents. Shows where branches merged.</p><p><b>Q: Resolve conflicts?</b><br><strong>A:</strong> 1) git status (see conflicts), 2) Open files (look for <<< === >>>), 3) Choose/combine code, 4) Remove markers, 5) Test, 6) git add filename, 7) git commit.</p>"
+      },
+      {
+        name: "Rebasing",
+        desc: "Rebase replays commits on new base for linear history. Interactive rebase allows editing commits.",
+        key: [
+          "Rebase moves/replays commits to new base",
+          "Creates cleaner, linear history compared to merge commits",
+          "Interactive rebase (-i) allows editing commit history",
+          "Golden rule: Never rebase public/shared branches",
+          "Use for private feature branches before merging to main"
+        ],
+        cmd: [
+          ["git rebase <branch>", "Rebase onto branch"],
+          ["git rebase -i HEAD~3", "Interactive rebase last 3 commits"],
+          ["git rebase --continue", "Continue after conflict"],
+          ["git pull --rebase", "Pull with rebase"]
+        ],
+        ex: [
+          { title: "Basic Rebase", code: "# Update feature with latest main\ngit checkout feature\ngit rebase main\n\n# Fix conflicts if any\ngit add resolved-file.js\ngit rebase --continue\n\n# Force push (history changed)\ngit push --force-with-lease" },
+          { title: "Interactive Rebase", code: "# Clean last 5 commits before PR\ngit rebase -i HEAD~5\n\n# Editor opens:\npick a1b2 Add feature\nsquash b2c3 WIP\nsquash c3d4 Fix typo\n\n# Commands:\n# pick - keep\n# squash - combine\n# drop - remove" }
+        ],
+        int: "<p><b>Q: Merge vs rebase?</b><br><strong>A:</strong> Merge: Preserves history, creates merge commits, non-destructive. Rebase: Linear history, no merge commits, rewrites history. Use merge for shared branches, rebase for private features.</p><p><b>Q: Golden rule?</b><br><strong>A:</strong> NEVER rebase public/shared branches! Only rebase local commits. Rebasing rewrites history - chaos if others have those commits.</p>"
+      }
+    ]
+  },
+  {
+    category: "Remote Operations",
+    icon: "☁️",
+    topics: [
+      {
+        name: "Remote Repositories",
+        desc: "Remote repositories are versions of your project hosted on network. Enable team collaboration.",
+        key: [
+          "Origin is the default name for primary remote repository",
+          "Can have multiple remotes (origin, upstream, etc.)",
+          "Remote branches track branches on the remote server",
+          "Fetch downloads changes without merging, pull does both",
+          "Common platforms: GitHub, GitLab, Bitbucket, Azure DevOps"
+        ],
+        cmd: [
+          ["git remote -v", "List remotes with URLs"],
+          ["git remote add <name> <url>", "Add new remote"],
+          ["git remote set-url <name> <url>", "Change remote URL"],
+          ["git fetch origin", "Download changes"]
+        ],
+        ex: [
+          { title: "Setup Remote", code: "# Add remote\ngit remote add origin git@github.com:user/repo.git\n\n# Push\ngit push -u origin main\n\n# Verify\ngit remote -v" },
+          { title: "Fork Workflow", code: "# Clone your fork\ngit clone git@github.com:rajkumar/repo.git\n\n# Add upstream\ngit remote add upstream git@github.com:company/repo.git\n\n# Sync fork\ngit fetch upstream\ngit merge upstream/main\ngit push origin main" }
+        ],
+        int: "<p><b>Q: Origin vs upstream?</b><br><strong>A:</strong> Origin: Your fork or primary remote. Upstream: Original repo you forked from. Workflow: Fork→Clone (origin)→Add original as upstream→Sync with upstream, push to origin, PR from origin to upstream.</p><p><b>Q: SSH vs HTTPS?</b><br><strong>A:</strong> SSH: Key-based, no passwords, better automation, preferred for DevOps. HTTPS: Works everywhere, username/token, easier initial setup.</p>"
+      },
+      {
+        name: "Push & Pull",
+        desc: "Push uploads commits to remote. Pull fetches and merges. Fetch downloads without merging.",
+        key: [
+          "git push uploads local commits to remote repository",
+          "git pull = git fetch + git merge (or rebase with --rebase)",
+          "Always pull before pushing to avoid conflicts and rejections",
+          "git fetch previews changes before integrating them",
+          "Use --force-with-lease not --force for safe force pushing"
+        ],
+        cmd: [
+          ["git pull", "Fetch and merge"],
+          ["git pull --rebase", "Fetch and rebase"],
+          ["git push", "Push to remote"],
+          ["git push -u origin <branch>", "Push and set upstream"],
+          ["git push --force-with-lease", "Safe force push"]
+        ],
+        ex: [
+          { title: "Daily Workflow", code: "# Morning\ngit pull origin main\n\n# Create feature\ngit checkout -b feature/monitoring\ngit commit -am \"Add monitoring\"\n\n# Sync before push\ngit checkout main\ngit pull\ngit checkout feature/monitoring\ngit rebase main\n\n# Push\ngit push -u origin feature/monitoring" },
+          { title: "Push Rejection", code: "git push\n# error: updates rejected\n\n# Fix: Pull first\ngit pull --rebase origin main\ngit push" }
+        ],
+        int: "<p><b>Q: Fetch vs pull?</b><br><strong>A:</strong> Fetch: Downloads changes, doesn't modify files, safe, updates remote-tracking branches. Pull: Fetch + merge, modifies working dir, can cause conflicts. Use fetch to preview changes before integrating.</p><p><b>Q: Why push rejected?</b><br><strong>A:</strong> Remote has commits you don't have. Solution: git pull (fetch+merge), resolve conflicts, git push. Never --force on shared branches!</p>"
+      }
+    ]
+  },
+  {
+    category: "Advanced Git",
+    icon: "⚡",
+    topics: [
+      {
+        name: "Stashing",
+        desc: "Temporarily save uncommitted changes for clean working directory. Essential for switching branches.",
+        key: [
+          "Stash saves working directory and staging area changes",
+          "Creates a stack - can have multiple stashes",
+          "Essential when switching branches with uncommitted work",
+          "Can apply stash to any branch, not just where created",
+          "Stashes are local only - not pushed to remote repositories"
+        ],
+        cmd: [
+          ["git stash", "Stash current changes"],
+          ["git stash save 'msg'", "Stash with message"],
+          ["git stash list", "List all stashes"],
+          ["git stash pop", "Apply and remove stash"],
+          ["git stash apply", "Apply, keep in stack"]
+        ],
+        ex: [
+          { title: "Basic Stashing", code: "# Working on feature\nvim app.js\n\n# Stash changes\ngit stash\n\n# Switch branches\ngit checkout main\n# Do something...\n\n# Return and restore\ngit checkout feature\ngit stash pop" },
+          { title: "Emergency Hotfix", code: "# Working on feature\ngit stash save \"WIP: Dashboard\"\n\n# Fix production issue\ngit checkout main\ngit checkout -b hotfix/timeout\n# ...fix and deploy...\n\n# Return to feature\ngit checkout feature/dashboard\ngit stash pop" }
+        ],
+        int: "<p><b>Q: pop vs apply?</b><br><strong>A:</strong> pop: Applies changes AND removes from stack. apply: Applies changes but KEEPS in stack. Use pop when done. Use apply to test in multiple branches or keep backup.</p><p><b>Q: DevOps use cases?</b><br><strong>A:</strong> 1) Emergency hotfix while working on feature, 2) Switch branches without committing, 3) Pull updates with dirty working dir, 4) Experiment backup, 5) Code review.</p>"
+      },
+      {
+        name: "Reset & Revert",
+        desc: "Reset moves branch pointer backward. Revert creates new commit undoing changes. Essential for fixing mistakes.",
+        key: [
+          "git reset moves HEAD and branch pointer backward",
+          "Three modes: --soft (keep staged), --mixed (unstage), --hard (discard)",
+          "git revert creates new commit that undoes changes (safe for public)",
+          "Reset rewrites history - dangerous for shared branches",
+          "Revert is safe for undoing commits already pushed to shared branches"
+        ],
+        cmd: [
+          ["git reset HEAD~1", "Undo commit, keep changes"],
+          ["git reset --soft HEAD~1", "Undo, keep staged"],
+          ["git reset --hard HEAD~1", "Undo and discard (DANGER)"],
+          ["git revert <commit>", "Create undoing commit"]
+        ],
+        ex: [
+          { title: "Reset Modes", code: "# Soft - keep staged\ngit reset --soft HEAD~1\n\n# Mixed (default) - unstage\ngit reset HEAD~1\n\n# Hard - DELETE ALL\ngit reset --hard HEAD~1\n# ⚠️ WARNING: Permanent!" },
+          { title: "Revert Public", code: "# Bad commit pushed\ngit revert a1b2c3\n\n# Creates new commit undoing changes\n# History preserved, safe" }
+        ],
+        int: "<p><b>Q: Three reset modes?</b><br><strong>A:</strong> --soft: Moves HEAD, keeps staged. --mixed: Moves HEAD, unstages (default). --hard: Moves HEAD, DELETES all changes (DANGEROUS!).</p><p><b>Q: Reset vs revert?</b><br><strong>A:</strong> Use revert when: Commit pushed, others have it, need preserve history. Use reset when: Commit local only, private branch. Rule: Never reset public history, always revert.</p>"
+      },
+      {
+        name: "Cherry-Pick",
+        desc: "Apply specific commits from one branch to another. Useful for selective hotfixes or features.",
+        key: [
+          "Cherry-pick copies commit from one branch to another",
+          "Creates new commit with different SHA (not a merge)",
+          "Useful for applying hotfixes or specific features across branches",
+          "Not a merge - just commit copy",
+          "Can cherry-pick multiple commits"
+        ],
+        cmd: [
+          ["git cherry-pick <commit>", "Apply commit to current branch"],
+          ["git cherry-pick <c1> <c2>", "Apply multiple commits"],
+          ["git cherry-pick --continue", "Continue after conflict"],
+          ["git cherry-pick --abort", "Abort operation"]
+        ],
+        ex: [
+          { title: "Hotfix Scenario", code: "# Bug fix on develop\ngit log --oneline develop\n# a1b2c3 Fix: Database timeout\n\n# Apply to production\ngit checkout main\ngit cherry-pick a1b2c3\ngit push origin main" },
+          { title: "Selective Features", code: "# Feature branch has 10 commits\n# Only 2 fixes needed in production\n\ngit checkout main\ngit cherry-pick m3n4o5  # Memory leak\ngit cherry-pick s9t0u1  # Security fix\n\n# Test and deploy\ngit push origin main" }
+        ],
+        int: "<p><b>Q: Cherry-pick vs merge?</b><br><strong>A:</strong> Cherry-pick: Copies specific commits, selective, creates new SHA. Use for hotfixes. Merge: Brings entire branch, all commits, preserves history. Use for integrating features.</p><p><b>Q: DevOps use cases?</b><br><strong>A:</strong> 1) Hotfix develop→production, 2) Backport to old release, 3) Wrong branch commit, 4) Partial feature needed now, 5) Security patch across versions.</p>"
+      }
+    ]
+  },
+  {
+    category: "GitHub Platform",
+    icon: "🐙",
+    topics: [
+      {
+        name: "Pull Requests",
+        desc: "PRs propose changes for review. Core collaboration tool enabling code review and approval workflows.",
+        key: [
+          "PR = request to pull changes from feature branch into target branch",
+          "Enables code review, testing, and discussion before merging",
+          "Can require passing CI/CD checks and approvals before merge",
+          "Supports merge commit, squash, and rebase strategies",
+          "GitHub provides diff view, inline comments, and review tools"
+        ],
+        cmd: [
+          ["gh pr create", "Create pull request (GitHub CLI)"],
+          ["gh pr list", "List open pull requests"],
+          ["gh pr view <n>", "View PR details"],
+          ["gh pr checkout <n>", "Checkout PR locally"],
+          ["gh pr merge <n> --squash", "Merge PR with squash"]
+        ],
+        ex: [
+          { title: "Complete PR Workflow", code: "# 1. Create feature branch\ngit checkout -b feature/add-monitoring\n\n# 2. Make changes\ngit commit -am \"feat: Add Prometheus monitoring\"\n\n# 3. Push\ngit push -u origin feature/add-monitoring\n\n# 4. Create PR\ngh pr create --title \"feat: Add Monitoring\"\n\n# 5. Address reviews\ngit commit -am \"fix: Review comments\"\ngit push\n\n# 6. Merge\ngh pr merge --squash --delete-branch" },
+          { title: "PR Template", code: "# .github/pull_request_template.md\n\n## Description\nBrief description\n\n## Type\n- [ ] Bug fix\n- [ ] New feature\n\n## Testing\n- [ ] Tested locally\n- [ ] Added tests\n\n## Closes\nCloses #123" }
+        ],
+        int: "<p><b>Q: Why PRs important?</b><br><strong>A:</strong> PRs enable: Code review (catch bugs), knowledge sharing (team learns), discussion, CI/CD integration (automated testing), approval workflow (control what goes to production), documentation.</p><p><b>Q: PR merge strategies?</b><br><strong>A:</strong> 1. Merge Commit: All commits + merge commit, shows full history. 2. Squash (Recommended): Combine all into one commit, clean history, easy revert. 3. Rebase: Linear history, no merge commit, preserves individual commits.</p>"
+      },
+      {
+        name: "GitHub Actions",
+        desc: "Built-in CI/CD platform automating testing, building, and deployment triggered by repository events.",
+        key: [
+          "Workflows defined in .github/workflows/ YAML files",
+          "Triggered by events: push, pull_request, schedule, manual dispatch",
+          "Runs on GitHub-hosted or self-hosted runners",
+          "Marketplace has thousands of pre-built actions",
+          "Free tier: 2000 minutes/month for private repos, unlimited for public"
+        ],
+        cmd: [
+          ["gh workflow list", "List all workflows"],
+          ["gh workflow run <name>", "Trigger workflow manually"],
+          ["gh run list", "List workflow runs"],
+          ["gh run view <id>", "View run details"]
+        ],
+        ex: [
+          { title: "Basic CI Workflow", code: "# .github/workflows/ci.yml\nname: CI\n\non: [push, pull_request]\n\njobs:\n  test:\n    runs-on: ubuntu-latest\n    steps:\n    - uses: actions/checkout@v3\n    - uses: actions/setup-node@v3\n      with:\n        node-version: '18'\n    - run: npm ci\n    - run: npm test" },
+          { title: "Docker Build & Push", code: "# .github/workflows/docker.yml\nname: Docker\n\non:\n  push:\n    branches: [main]\n    tags: ['v*']\n\njobs:\n  build:\n    runs-on: ubuntu-latest\n    steps:\n    - uses: actions/checkout@v3\n    - uses: docker/build-push-action@v4\n      with:\n        push: true\n        tags: myapp:latest" }
+        ],
+        int: "<p><b>Q: Actions vs Jenkins?</b><br><strong>A:</strong> Actions: Built into GitHub, YAML-based, huge marketplace, free tier, easier setup. Limited for complex pipelines. Jenkins: More powerful, self-hosted (full control), works with any VCS, mature plugins. Requires server management. Choose Actions for GitHub projects and simple CI/CD. Jenkins for complex enterprise pipelines.</p><p><b>Q: Handle secrets?</b><br><strong>A:</strong> Never commit secrets! Use Repository Secrets (Settings→Secrets). Access in workflow: ${{ secrets.NAME }}. Secrets encrypted, masked in logs. Use for: API keys, passwords, tokens, certificates.</p>"
+      }
+    ]
+  }
+];
+
+function renderTopics() {
+  const container = document.getElementById('content');
+  
+  allTopics.forEach(cat => {
+    const categoryDiv = document.createElement('div');
+    categoryDiv.className = 'category';
+    
+    let html = `<div class="category-title">
+      <span>${cat.icon}</span>
+      <span>${cat.category}</span>
+    </div>
+    <div class="topics-grid">`;
+    
+    cat.topics.forEach(topic => {
+      const topicData = JSON.stringify(topic).replace(/'/g, "&#39;").replace(/"/g, "&quot;");
+      html += `
+        <div class="topic-card" onclick='openModal(${topicData})'>
+          <h3>${topic.name}</h3>
+          <p class="cat-label">${cat.category}</p>
+          <p>${topic.desc}</p>
+        </div>`;
+    });
+    
+    html += '</div>';
+    categoryDiv.innerHTML = html;
+    container.appendChild(categoryDiv);
+  });
+}
+
+function openModal(topic) {
+  const modal = document.getElementById('modal');
+  const headerContent = document.getElementById('modal-header-content');
+  const bodyContent = document.getElementById('modal-body-content');
+  
+  headerContent.innerHTML = `
+    <h2>${topic.name}</h2>
+    <div class="desc">${topic.desc}</div>
+  `;
+  
+  let bodyHTML = `
+    <div class="section">
+      <div class="section-title">🔑 Key Points</div>
+      ${topic.key.map(k => `<div class="keypoint"><span class="keypoint-text">${k}</span></div>`).join('')}
+    </div>
+    
+    <div class="section">
+      <div class="section-title">💻 Essential Commands</div>
+      ${topic.cmd.map(c => `
+        <div class="command-block">
+          <code>${c[0]}</code>
+          <div class="desc">${c[1]}</div>
+        </div>
+      `).join('')}
+    </div>
+    
+    <div class="section">
+      <div class="section-title">🎯 Practical Examples</div>
+      ${topic.ex.map(ex => `
+        <div class="example-block">
+          <h4>${ex.title}</h4>
+          <pre>${ex.code}</pre>
+        </div>
+      `).join('')}
+    </div>
+    
+    <div class="interview-section">
+      <div class="section-title">💡 Interview Questions & Answers</div>
+      ${topic.int}
+    </div>
+  `;
+  
+  bodyContent.innerHTML = bodyHTML;
+  modal.style.display = 'block';
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal() {
+  document.getElementById('modal').style.display = 'none';
+  document.body.style.overflow = 'auto';
+}
+
+window.onload = () => {
+  try {
+    renderTopics();
+    console.log('✅ Git & GitHub Guide loaded successfully!');
+  } catch (error) {
+    console.error('❌ Error:', error);
+  }
+};
+
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') closeModal();
+});
+</script>
+
+</body>
+</html>
